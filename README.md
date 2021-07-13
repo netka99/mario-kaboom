@@ -2,6 +2,6 @@
 
 A game of Mario using JavaScript and Kaboom.js
 
-You can play the game [page on GitHub](https://netka99.github.io/mario-kaboom/).
+You can play the game on [GitHub page](https://netka99.github.io/mario-kaboom/).
 
 
