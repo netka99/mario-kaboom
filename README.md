@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Super Mario Bros and Kaboom.js
 
 You can use the [editor on GitHub](https://github.com/netka99/mario-kaboom/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
