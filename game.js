@@ -4,6 +4,7 @@ kaboom({
   scale: 1.5,
   debug: true,
   clearColor: [0, 0, 0, 1],
+  playAllSounds: true,
 });
 
 loadRoot("https://i.imgur.com/");
@@ -19,9 +20,22 @@ loadSprite("pipe-top-left", "ReTPiWY.png");
 loadSprite("pipe-top-right", "hj2GK4n.png");
 loadSprite("pipe-bottom-left", "c1cYSbt.png");
 loadSprite("pipe-bottom-right", "nqQ79eI.png");
+
 loadSprite("bg", "OalCXcz.png");
 
+loadSprite("blue-block", "fVscIbn.png");
+loadSprite("blue-brick", "3e5YRQd.png");
+loadSprite("blue-steel", "gqVoI2b.png");
+loadSprite("blue-evil-shroom", "SvV4ueD.png");
+loadSprite("blue-surprise", "RMqCc1G.png");
+
+//loadSound("sound", "https://soundcloud.com/jasepo/super-mario-bros-2-overworld");
+//loadSound("jump","https://sfxr.me/#11111JB7Hco8246kTAh7nA1W7rAFd1QoQzdt6D5MSjsEUrECRdzrvdB9Y2EUKNkZ4YVXvya8Lz98Vq1zEVKhhheHuW8nKZVxJyNAaD7426PGjzPRgC95P8zj");
+
 scene("game", ({ level, score }) => {
+/*const music = play("sound", { loop: true, });
+
+volume(0.5);*/
   layers(["bg", "obj", "ui"], "obj");
 
   add([
@@ -29,24 +43,60 @@ scene("game", ({ level, score }) => {
     //scale(width() / 240, height() / 240),
     origin("topleft"),
     scale(1.1),
+    pos(-500, 0),
   ]);
 
   const maps = [
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "                                    ",
-    "      %  =*=%                       ",
-    "                                    ",
-    "                       -+           ",
-    "                 ^    ^()           ",
-    "=========================   ========",
+    [
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "                                                               ",
+      "    %  =*=%                                                    ",
+      "                                                               ",
+      "                                                            -+ ",
+      "                 ^                ^            ^           ^() ",
+      "==================       %=%   =====%=%      %%%      =%%%=====",
+      "                                                               ",
+      "                    =%=                            %=          ",
+      "                                                               ",
+      "                                        ^        ^       ^     ",
+      "===============================================================",
+      "===============================================================",
+    ],
+    [
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                                               £",
+      "£                                         @@@                   £",
+      "£                                                               £",
+      "£      @@@@@*@                                                  £",
+      "£                                         x x                   £",
+      "£                                       x x x                   £",
+      "£                                     x x x x  x              -+£",
+      "£                   z       z     z x x x x x  x             z()£",
+      "£yyyyyyyyyyyyyyyyyyyy     yyy   yyyyyyyyyyyyyyyyy@@@y    @@yyyyy£",
+      "£                                                               £",
+      "£                                                            z  £",
+      "£yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy£",
+      "£yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy£",
+
+    ],
   ];
 
   const levelCfg = {
@@ -61,8 +111,13 @@ scene("game", ({ level, score }) => {
     ")": [sprite("pipe-bottom-right"), solid(), scale(0.5)],
     "-": [sprite("pipe-top-left"), solid(), scale(0.5), "pipe"],
     "+": [sprite("pipe-top-right"), solid(), scale(0.5), "pipe"],
-    "^": [sprite("evil-shroom"), solid(), "dangerous"],
+    "^": [sprite("evil-shroom"), solid(),body(), "dangerous"],
     "#": [sprite("mushroom"), solid(), "mushroom", body()],
+    "y": [sprite("blue-block"), solid(), scale(0.5)],
+    "£": [sprite("blue-brick"), solid(), scale(0.5)],
+    "z": [sprite("blue-evil-shroom"), solid(), scale(0.5), body(), "dangerous"],
+    "@": [sprite("blue-surprise"), solid(), scale(0.5), "coin-surprise"],
+    "x": [sprite("blue-steel"), solid(), scale(0.5)],
   };
 
   const MOVE_SPEED = 120;
@@ -70,7 +125,7 @@ scene("game", ({ level, score }) => {
   const BIG_JUMP_FORCE = 550;
   let CURRENT_JUMP_FORCE = JUMP_FORCE;
   let isJumping = true;
-  const FALL_DEATH = 400;
+  const FALL_DEATH = 800;
 
   const gameLevel = addLevel(maps[level], levelCfg);
 
@@ -177,7 +232,7 @@ scene("game", ({ level, score }) => {
   });
 
   player.action(() => {
-    //   camPos(player.pos);
+    camPos(player.pos);
     if (player.pos.y >= FALL_DEATH) {
       go("lose", { score: scoreLabel.value });
     }
@@ -186,7 +241,7 @@ scene("game", ({ level, score }) => {
   player.collides("pipe", () => {
     keyPress("down", () => {
       go("game", {
-        level: level + 1,
+        level: (level + 1) % maps.length,
         score: scoreLabel.value,
       });
     });
@@ -210,6 +265,7 @@ scene("game", ({ level, score }) => {
     if (player.grounded()) {
       isJumping = true;
       player.jump(CURRENT_JUMP_FORCE);
+    // play("jump");
     }
   });
 
